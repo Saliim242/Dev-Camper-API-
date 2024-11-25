@@ -1,3 +1,4 @@
+const Bootcamp = require("../models/Bootcam.model");
 // @Desc  : Get All BootCamps
 // @Route : GET /api/v1/bootCamps
 // @access : public
@@ -18,8 +19,27 @@ exports.getBootCamp = (req, res, next) => {
 // @Desc  :   Create BootCamps
 // @Route : POST /api/v1/bootCamps
 // @access : private
-exports.createBootCamp = (req, res, next) => {
-  res.status(201).json({ success: true, msg: "Create New Bootcamp" });
+exports.createBootCamp = async (req, res, next) => {
+  try {
+    const { name } = req.body;
+    const nameExists = await Bootcamp.findOne({ name: name });
+    if (nameExists) {
+      return res
+        .status(400)
+        .json({
+          success: false,
+          msg: "Bootcam with this name already exists.",
+        });
+    }
+    const bootcamp = await Bootcamp.create(req.body);
+
+    res
+      .status(201)
+      .json({ success: true, msg: "Create New Bootcamp", data: bootcamp });
+  } catch (error) {
+    console.error("Creating Bootcam Error" + error.message);
+    res.status(500).send({ success: false, msg: "Server Error" });
+  }
 };
 
 // @Desc  : Update BootCamp
