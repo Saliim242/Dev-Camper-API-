@@ -2,8 +2,16 @@ const Bootcamp = require("../models/Bootcam.model");
 // @Desc  : Get All BootCamps
 // @Route : GET /api/v1/bootCamps
 // @access : public
-exports.getBootCamps = (req, res, next) => {
-  res.status(200).json({ success: true, msg: "Get All Bootcamps" });
+exports.getBootCamps = async (req, res, next) => {
+  try {
+    const bootcamps = await Bootcamp.find();
+    res.status(200).json({ success: true, msg: "Get All Bootcamps" , data: bootcamps});
+    
+  } catch (error) {
+
+    res.status(400).json({success: false , msg:error.message})
+    
+  }
 };
 
 // @Desc  : Get Single BootCamps
